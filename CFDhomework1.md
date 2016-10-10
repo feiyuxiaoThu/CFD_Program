@@ -1,2 +1,0 @@
-# CFD homework 1
-

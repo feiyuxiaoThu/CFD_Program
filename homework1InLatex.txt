@@ -1,0 +1,199 @@
+\documentclass[12pt]{scrartcl}
+
+ 
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+ 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{reflection}[2][Reflection]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+%%% For accessing system, OTF and TTF fonts
+%%% (would have been loaded by polylossia anyway)
+\usepackage{fontspec}
+
+%%% For language switching -- like babel, but for xelatex
+\usepackage{polyglossia}
+
+%%% For those cool-looking menus and keystrokes
+\usepackage{menukeys}
+
+%%% For the xelatex (and other LaTeX friends) logos
+\usepackage{hologo}
+
+%%% For the awesome fontawesome icons!
+\usepackage{fontawesome}
+
+\usepackage[hyphens]{url}
+
+
+\setmainlanguage{english}
+\setotherlanguages{arabic,hindi,sanskrit,greek,thai} %% or other languages
+
+
+
+%%% You'll probably want these lines if
+%%% you are also using tikz-related packages with
+%%% RTL languages. Put these lines *after* you 
+%%% loaded the RTL languages.
+\makeatletter
+    \let\pgfpicture\origin@pgfpicture%
+    \let\endpgfpicture\origin@endpgfpicture%
+\makeatother
+
+
+% Main serif font for English (Latin alphabet) text
+\setmainfont[Ligatures=TeX]{TeX Gyre Termes}
+\setsansfont{Lato}
+\setmonofont{Inconsolata}
+
+% define fonts for other languages
+\newfontfamily\arabicfont[Script=Arabic]{Amiri}
+\newfontfamily\devanagarifont[Script=Devanagari]{Lohit Devanagari}
+\newfontfamily\greekfont[Script=Greek]{GFS Artemisia}
+\newfontfamily\thaifont[Script=Thai]{FreeSerif}
+
+
+%%% CJK needs a different treatment
+\usepackage[space]{xeCJK}
+
+%%% Assuming Chinese is the main CJK language...
+\setCJKmainfont[
+  BoldFont=WenQuanYi Zen Hei,
+  ItalicFont=AR PL KaitiM GB]
+  {AR PL SungtiL GB}
+\setCJKsansfont{WenQuanYi Zen Hei}
+\setCJKmonofont{cwTeXFangSong}
+
+%%% Define fonts for Japanese and Korean
+\newCJKfontfamily\japanesefont{IPAMincho}
+
+%%% You can also upload your own font files
+% \newCJKfontfamily\koreanfont{[UnGraphic.ttf]}
+%%% ...or go along with a font available on the server
+\newCJKfontfamily\koreanfont{cwTeXMing}
+
+
+
+\title{Homework1 of CFD}
+\author{力四 肖飞宇}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Problem 1}
+分析二阶线性方程的类型：
+$$a\mu_{xx} + 2b\mu_{xy} + c\mu_{yy} + d\mu_{x} + e\mu_{y} + f\mu + g = 0$$
+
+\begin{proof}
+不失一般性，可以设 a 不为零， 则可以对方程做变换：
+$$\xi = \phi(x,y), \eta = \psi(x,y)$$
+其中要求变换对应的Jacobi行列式不为零。
+由偏微分方程的知识可以得到，我们可以选择合适的使得$\xi$和$\eta$保证为独立变量的情况下使得可以将问题变换为求解常微分方程：
+$$a ({\frac{dy}{dx}})^2 - 2b {\frac{dy}{dx}} + c =0$$
+或者可以写作：
+$${\frac{dy}{dx} = \frac{b}{a} \pm \frac{b}{a} \sqrt{b^2 -ac}}$$
+根据偏微分方程的分类理论知道这样可以得到两个线性无关的解，我们只需要对判别式进行讨论（我们记$\Delta = b^2 - ac$）就可以对于方程的类型做出分类。
+\begin{itemize}
+\item	如果$\Delta>0$,则方程的解为两个实函数则对应两条实的特征线，此时为双曲型方程；
+\item 如果$\Delta<0$,类似的两条特征线都不是实的，此时为椭圆型方程；
+\item 而当$\Delta=0$，方程有重根，此时为抛物型方程。
+\end{itemize}
+    可以证明，当 a 或者 c都为零时，做适当的变换，我们总可以得到完全相同的结论。
+  \end{proof}
+    
+    
+\section{Problem 2}
+\subsection{分析不可压缩流体的定常N-S方程}
+\begin{proof}
+方程为;
+$$u_x + v_y = 0\eqno{(2.1.1)}$$
+$$uu_x + vu_y = -\frac{1}{\rho}p_x + \frac{\mu}{\rho}(u_{xx}+u_{yy})\eqno{(2.1.2)}$$
+$$ uv_x + vv_y = -\frac{1}{\rho}p_y + \frac{\mu}{\rho}(v_{xx}+v_{yy})\eqno{(2.1.3)}$$
+可以设
+
+$$f=u_x,g=u_y,h=v_x$$
+可得方程组为：
+
+$$\left\{
+\begin{aligned}
+f_x + h_y & = & 0 \\
+g_x -f_y & = & 0 \\
+h_x - f_y - \frac{1}{\mu}p_y & = & \frac{1}{\nu} (uh - vf) \\
+p_x - \mu g_y + \mu h_y &= & -\rho (uf + vg)\\
+u_x &=& f\\
+v_x&=&h\\
+\end{aligned}
+\right.
+$$
+
+可以写成矩阵方程的形式
+$$\frac{\partial{\textbf{U}}}{\partial{x}} + 
+\textbf{A} \frac{\partial{ \textbf{U} }} {\partial{y}} = \textbf{F} $$
+其中 
+\begin{equation}       %开始数学环境
+\textbf{A}= \left(                 %左括号
+  \begin{matrix}   %该矩阵一共3列，每一列都居中放置
+    0 & 0 & 1 & 0 & 0 &1 \\  %第一行元素
+    -1 & 0 & 0 & 0 & 0 &0\\  %第二行元素
+    -1& 0 & 0 & -\frac{1}{\mu} & 0 &0 \\
+    0& - \mu &  \mu & 0 & 0 &0\\
+    0 & 0 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 \\
+  \end{matrix}
+\right)                 %右括号
+\end{equation}
+ 矩阵$ \textbf{A} $的特征方程为
+$$ \lambda^2 {(\lambda^2 +1 )}^2 =0  $$
+其解为 $$\lambda_{1,2} = 0 , \lambda_{3,4}=i, \lambda_{5,6}=-i $$
+注意到，两个实特征值实际上来源于所引入的两个辅助变量f和h，所以方程的特征值均为复数，所以该方程为椭圆形的方程。
+
+\end{proof}
+
+\subsection{分析边界层流动方程}
+\begin{proof}
+方程为
+
+$$uu_x + vu_y = U U_x + \nu u_yy\eqno{(2.2.1)} $$
+$$u_x + v_y =0 \eqno{(2.2.2)}$$
+
+类似于2.1,我们可以变换方程的形式为：
+$$f=u,g=u_y,h=v$$
+$$\left\{
+\begin{aligned}
+ uf_x + vf_y - \nu g_y &=& U\frac{dU}{dx}\\
+ f_x + h_y & = & 0\\
+ f_y &= &g \\
+\end{aligned}
+\right.
+$$
+对应的矩阵
+\begin{equation}       %开始数学环境
+\textbf{A}= \left(                 %左括号
+  \begin{matrix}   %该矩阵一共3列，每一列都居中放置
+    0&0&0\\
+    -\frac{\mu}{\nu}&0&0\\
+    \mu& 0 &0 \\
+  \end{matrix}
+\right)                 %右括号
+\end{equation}
+很容易证明其有3重实根0，而结合矩阵不满秩可以得到方程为抛物型方程的结论。
+
+\end{proof}
+
+
+\end{document}
