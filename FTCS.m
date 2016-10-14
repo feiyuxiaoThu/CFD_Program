@@ -1,7 +1,7 @@
 %FTCS ∏Ò Ω
 clear ;
 
-d = 0.1; % 0.1,0.5,1.0
+d = 0.5; % 0.1,0.5,1.0
 
 num_x = 500; % 100-500
 dx = 1.0/num_x;
@@ -41,7 +41,7 @@ U2x = zeros(1,num_x);
             end
             
            
-           
+           U1x(i)=ut0;
             U2x(i) = U1x(i);
             
  end
@@ -56,6 +56,8 @@ U2x = zeros(1,num_x);
         
         
 for n = 2:1:num_t
+    
+    
     
         for i=2:1:num_x-1
             
@@ -81,7 +83,10 @@ for n = 2:1:num_t
 end
 
 
-%plot(M_u(480,:));
+mesh(M_u);
+title('The Temperature distribution as time evolves,dt = ');
+xlabel('T');
+ylabel('X');
 
 
 
