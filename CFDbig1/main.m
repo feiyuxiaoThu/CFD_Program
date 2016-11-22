@@ -1,5 +1,6 @@
 %bigwork1
 clear ;
+%读入翼型表面数据
 fid=fopen('xyData.dat');
 B=textscan(fid,'%f %f');%把每一列的数据读入到读入到单元数组B中
 C=[B{1} B{2}];          %从单元数组B中提取每列数据赋值给矩阵C
@@ -22,7 +23,6 @@ num_x=2*numrx+n;
 num_y=60;
 
 x=zeros(num_x,num_y);
-
 y=zeros(num_x,num_y);
 
 x(numrx,1)=1.008;
@@ -75,7 +75,7 @@ for i=1:n
 end
 
 
-%左边区域
+%左边半圆形区域区域
 for i=numrx+1:numrx+40
     
         %x(i,num_y)=x(numrx,1)-Dy*cos(thlta(i-numrx));
@@ -111,22 +111,6 @@ for j=2:num_y
         end
         
         y(numrx+40,j)=0;
-%     if x(i,j)>0.5
-%             
-%         if i<numrx+41
-%              y(i,j)=y(i,j-1)+(j-1)*dyy;
-%         end
-%         if i>numrx+41
-%             y(i,j)=y(i,j-1)-(j-1)*dyy;
-%         end
-%     else    
-%              if i<numrx+41
-%                  y(i,j)=y(i,1)+(j-1)*(y(i,num_y)-y(i,1))/(num_y-2);
-%              end
-%              if i>numrx+41
-%                  y(i,j)=y(i,1)+(j-1)*(y(i,num_y)-y(i,1))/(num_y-2);
-%              end;
-%     end
     
     end       
             
@@ -227,6 +211,45 @@ while 1
     end
 end
 
- z=zeros(num_x,num_y);
+  z=zeros(num_x,num_y);
  mesh(z,x,y);
 %plot(x(:,num_y),y(:,num_y))
+fid0=fopen('mu.txt');
+BB=textscan(fid0,'%f %f %f');%把每一列的数据读入到读入到单元数组B中
+%CCC=[BB%nn=max(size(CCC));  
+%mu=CCC(:,1);
+%x_c=CCC(:,2);z_c=CCC(:,3); 
+mu=BB{1,1};
+x_c=BB{1,2};
+z_c=BB{1,3};
+u_infty=1;
+Uxw=zeros(num_x,num_y);
+Uyw=zeros(num_x,num_y);
+
+for i=2:num_x-1
+        for j=2:num_y-1
+    Uxw(i,j)=u_infty*cos(10*180/pi);
+     Uyw(i,j)=u_infty*sin(10*180/pi);
+        end
+end
+
+
+for k=2:num_x-1
+        for j=2:num_y-1
+
+
+    for i=1:179
+        Uxw(k,j)=Uxw(k,j)+mu(i)*(x(k,j)-x_c(i))/((2*pi)*((x(k,j)-x_c(i))^2+(y(k,j)-z_c(i))^2))+mu(180)*(y(k,j)-z_c(i))/((2*pi)*((x(k,j)-x_c(i))^2+(y(k,j)-z_c(i))^2));
+        Uyw(k,j)=Uyw(k,j)+mu(i)*(y(k,j)-z_c(i))/((2*pi)*((x(k,j)-x_c(i))^2+(y(k,j)-z_c(i))^2))-mu(180)*(x(k,j)-x_c(i))/((2*pi)*((x(k,j)-x_c(i))^2+(y(k,j)-z_c(i))^2));
+        
+    end
+        end
+        
+        
+end
+
+
+ 
+fid = fopen('xy.txt', 'wt');
+fprintf(fid, '%f %f\n', x,y);
+ fclose(fid);
