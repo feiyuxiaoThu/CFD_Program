@@ -2,9 +2,10 @@
 %激波管
 %lax
 clear;
-dx=0.0005;
-dt=0.0001; %稳定性
-t_total=0.005;
+dx=0.001;
+dt=0.01; %稳定性
+CFL=0.1;
+t_total=0.25;
 L=1;
 gamma=1.4;
 x=-0.5:dx:0.5;
@@ -18,14 +19,16 @@ uu=zeros(1,num);
 e=zeros(1,num);
 ee=zeros(1,num);
 
+Lt=zeros(1,num);
+
 %系数
 v=zeros(1,4);
 vv=zeros(1,4);
 e2=zeros(1,2);
 e4=zeros(1,2);
 
-k2=0.6; %0.5-0.6
-k4=0.2;
+k2=3; %0.5-0.6
+k4=0.01;
 
 EE=zeros(1,2);
 EEE=zeros(1,2);
@@ -51,9 +54,14 @@ for i=1:num
     uu(i)=u(i);
 end
 
+t=0;
 
-for t=0:dt:t_total
-   
+while 1
+    for i=1:num
+        Lt(i)=abs(u(i))+(gamma*p(i)/ro(i))^0.5;
+    end
+    
+   dt=CFL*dx/max(Lt);
     
     
     for i=4:num-3
@@ -121,6 +129,11 @@ for t=0:dt:t_total
         u(i)=uu(i);
         e(i)=ee(i);
         p(i)=pp(i);
+    end
+    
+    t=t+dt;
+    if t>=t_total
+        break;
     end
    
     

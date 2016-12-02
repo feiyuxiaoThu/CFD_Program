@@ -1,9 +1,10 @@
 %¼¤²¨¹Ü
 %lax
 clear;
-dx=0.0005;
+dx=0.001;
 dt=0.0001; %ÎÈ¶¨ÐÔ
-t_total=0.2;
+CFL=0.1;
+t_total=0.25;
 L=1;
 gamma=1.4;
 x=-0.5:dx:0.5;
@@ -16,6 +17,9 @@ u=zeros(1,num);
 uu=zeros(1,num);
 e=zeros(1,num);
 ee=zeros(1,num);
+
+Lt=zeros(1,num);
+
 
 
 
@@ -39,10 +43,15 @@ for i=1:num
     uu(i)=u(i);
 end
 
+t=0;
 
+while 1
+    for i=1:num
+        Lt(i)=abs(u(i))+(gamma*p(i)/ro(i))^0.5;
+    end
+    
+   dt=CFL*dx/max(Lt);
 
-for t=0:dt:t_total
-   
     
     
     for i=2:num-1
@@ -89,7 +98,10 @@ for t=0:dt:t_total
         p(i)=pp(i);
     end
    
-    
+    t=t+dt;
+    if t>=t_total
+        break;
+    end
 end
 
 
