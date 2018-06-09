@@ -7,7 +7,7 @@ h1=50; %左边界的对流参数
 tf2=30;
 h2=100; %右边界的对流参数
 
-N=50; %划分格子数目
+N=30; %划分格子数目
 d=L/N;
 
 num=(N+1)*(N+1);
@@ -76,13 +76,14 @@ b(N*(N+1)+N+1)=(d*h1*tf1/k)/(h1*d/k +2);
 
 
 
-
  AA=eye(num)-A;
- x=b/AA;
-%x1= Gauss(AA,b);
- %x0=zeros(1,num);
- %x2=GS(AA,b,x0,0.1,500);
-%x3 = SOR(AA,b,0.1,500);
+
+ t0=cputime;
+% x=Jocabi(AA,b);
+ %x = Gauss(AA,b);
+% x=GS(AA,b);
+ x = SOR( AA, b, T, 1.1, 1e-4, 5000 );
+ t1=cputime-t0;
 
 t=zeros(N+1,N+1);
 for i=1:N+1
@@ -91,6 +92,29 @@ for i=1:N+1
     end
 end
 
+figure ;
 mesh(t');
-     
+xlabel('y');
+ylabel('x');
+zlabel('T');
+title('温度场分布');
 
+%绘制图形
+p_l=zeros(1,N-1);
+p_r=zeros(1,N-1);
+p_d=zeros(1,N-1);
+for i=1:N-1
+    p_l(i)=h2*(tf2-t(1,i+1))*d;
+    p_r(i)=h1*(tf1-t(N+1,i+1))*d;
+    p_d(i)=k*(t(i+1,1)-t(i+1,2));
+end
+
+%  
+figure;
+ plot(p_l);
+ hold on;
+ plot(p_r);
+ hold on;
+ plot(p_d);
+ legend('左边界热流','右边界热流','下边界热流');
+ title('边界热流分布');

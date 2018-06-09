@@ -1,26 +1,43 @@
-function x=GS(A,b,xi,eps,N)
-%x为方程组的解A为系数矩阵b为常数项x0为迭代初值eps为误差N是限定的迭代次数
-%首先要将A分解为上下三角矩阵
-L=triu(A)-A;
-U=tril(A)-A;
-D=A+L+U;
-Bs=U/(D-L);
-fs=b/(D-L);
-%得到迭代格式Bs为迭代阵fs为常向量
-i=0;
-con=0;
-%其中con是用来记录计算结果是否收敛
-while i<N
-    i=i+1;
-    x=Bs*xi+fs;
-    for j=1:length(b)
-        il(i,j)=x(j);
+function  x=GS(a,b)
+
+e=1e-4;
+
+n=length(b);
+
+N=10000;
+
+x=zeros(n,1);
+
+tt=zeros(n,1);
+
+for kk=1:N
+
+    sum=0;
+
+    tt(1:n)=x(1:n);
+
+    for i=1:n      
+
+    x(i)=(b(i)-a(i,1:(i-1))*x(1:(i-1))-a(i,(i+1):n)*tt((i+1):n))/a(i,i);
+
     end
-    if norm(x-xi)<eps
-        con=1;
-        break
+
+    for i=1:n
+
+        sum=sum+(tt(i)-x(i))^2;
+
     end
-    xi=x;
+
+    if sqrt(sum)<e  
+
+        break;
+
+    end
+
 end
- 
+
+if kk==N warning('未能找到近似解');
+
+end
+
  
